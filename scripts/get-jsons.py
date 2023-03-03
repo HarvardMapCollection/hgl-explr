@@ -1,28 +1,28 @@
+#gets values from all the metadata jsons for HGL records and writes them to a spreadsheet
 import os, json
 import pandas as pd
 
-path_to_json = '/Users/bellelipton/Documents/GitHub/harvard-geodata/json'
+path_to_json = '{FILEPATH}/harvard-geodata/json'
 json_files = [pos_json for pos_json in os.listdir(path_to_json) if pos_json.endswith('.json')]
-jsons_data = pd.DataFrame(columns=['title', 'place'])
+jsons_data = pd.DataFrame(columns=['layerid','title', 'description', 'layertype', 'creator', 'format', 'place', 'subject', 'bbox'])
 
 for index, js in enumerate(json_files):
     with open(os.path.join(path_to_json, js)) as json_file:
         json_text = json.load(json_file)
 
-
+        layerid = json_text['layer_id_s']
         title = json_text['dc_title_s']
-        # description = json_text['dc_description_s']
-        # layertype = json_text['layer_geom_type_s']
-        # creator = json_text['dc_creator_sm'][0]
-        # format = json_text['dc_format_s']
+        description = json_text['dc_description_s']
+        layertype = json_text['layer_geom_type_s']
+        creator = json_text['dc_creator_sm'][0]
+        format = json_text['dc_format_s']
         try:
             place = json_text['dct_spatial_sm'][0]
         except KeyError:
             place = "null"
-        # subject = json_text['dc_subject_sm'][0]
-        # bbox = json_text['solr_geom']
-        # here I push a list of data into a pandas DataFrame at row given by 'index'
-        jsons_data.loc[index] = [title, place]
+        subject = json_text['dc_subject_sm'][0]
+        bbox = json_text['solr_geom']
+        jsons_data.loc[index] = [layerid, title, description, layertype, creator, format, place, subject, bbox]
 
 # now that we have the pertinent json data in our DataFrame let's look at it
-jsons_data.to_csv('/Users/bellelipton/Downloads/data/hgl-records-summary.csv', sep='\t')
+jsons_data.to_csv('{FILEPATH}/hgl-records-summary.csv')
