@@ -20,7 +20,7 @@ for index, js in enumerate(json_files):
             date = json_text['solr_year_i']
         except KeyError:
             date = "null"
-        desc_date = json_text['layer_modified_dt']
+        desc_date = json_text['layer_modified_dt'][0:4]
         try:
             place = json_text['dct_spatial_sm'][0]
         except KeyError:
